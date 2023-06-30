@@ -61,7 +61,6 @@ function photographerPageFactory(photographer) {
 
     document.body.appendChild(menuTrier);
 
-
     // Container media //
     const mediaContainer = document.createElement('div');
     mediaContainer.classList.add('mediaContainer');
@@ -73,14 +72,13 @@ function photographerPageFactory(photographer) {
       const cardBas = document.createElement('div');
       cardBas.classList.add('card-bas');
 
-      let media = null
+      let media = null;
 
-      if (element.image !== undefined){
+      if (element.image !== undefined) {
         media = document.createElement('img');
         media.setAttribute('src', `assets/photographers/${name}/${element.image}`);
         media.classList.add('imageMedia');
-      }
-      else if (element.video !== undefined){
+      } else if (element.video !== undefined) {
         media = document.createElement('video');
         media.setAttribute('src', `assets/photographers/${name}/${element.video}`);
         media.classList.add('videoMedia');
@@ -103,7 +101,6 @@ function photographerPageFactory(photographer) {
         cardMediaPhoto.appendChild(cardBas);
         mediaContainer.appendChild(cardMediaPhoto);
       }
-
     });
 
     // Compteur coeur et prix
@@ -130,6 +127,93 @@ function photographerPageFactory(photographer) {
     document.body.appendChild(mediaContainer);
     document.body.appendChild(divCoeur);
 
+    // Gestion du tri
+
+    menuDeroulant.addEventListener('click', (event) => {
+      const selectedOption = event.target.textContent;
+
+      switch (selectedOption) {
+        case 'Nom':
+          trierParNom();
+          break;
+        case 'Popularité':
+          trierParPopularite();
+          break;
+        case 'Date':
+          trierParDate();
+          break;
+      }
+    });
+
+    function trierParNom() {
+      const triemedia = medias.slice().sort((premier, second) => {
+        return premier.title.localeCompare(second.title);
+      });
+
+      mettreAJourAffichage(triemedia);
+    }
+
+    function trierParPopularite() {
+      const triemedia = medias.slice().sort((premier, second) => {
+        return second.likes - premier.likes;
+      });
+
+      mettreAJourAffichage(triemedia);
+    }
+
+    function trierParDate() {
+      const triemedia = medias.slice().sort((premier, second) => {
+        return new Date(premier.date) - new Date(second.date);
+      });
+
+      mettreAJourAffichage(triemedia);
+    }
+
+    function mettreAJourAffichage(triemedia) {
+      while (mediaContainer.firstChild) {
+        mediaContainer.firstChild.remove();
+      }
+
+      triemedia.forEach((element) => {
+        const cardMediaPhoto = document.createElement('div');
+        cardMediaPhoto.classList.add('cardMediaPhoto');
+
+        const cardBas = document.createElement('div');
+        cardBas.classList.add('card-bas');
+
+        let media = null;
+
+        if (element.image !== undefined) {
+          media = document.createElement('img');
+          media.setAttribute('src', `assets/photographers/${name}/${element.image}`);
+          media.classList.add('imageMedia');
+          media.loading = 'lazy';
+        } else if (element.video !== undefined) {
+          media = document.createElement('video');
+          media.setAttribute('src', `assets/photographers/${name}/${element.video}`);
+          media.classList.add('videoMedia');
+          media.loading = 'lazy';
+        }
+
+        if (media !== null) {
+          media.classList.add('media');
+
+          const mediaTitle = document.createElement('h2');
+          mediaTitle.textContent = element.title;
+          mediaTitle.classList.add('mediaTitle');
+
+          const coeur = document.createElement('p');
+          coeur.innerHTML = `${element.likes} <i class="fa-solid fa-heart" style="color: #911c1c;"></i>`;
+          coeur.classList.add('coeur');
+
+          cardMediaPhoto.appendChild(media);
+          cardBas.appendChild(mediaTitle);
+          cardBas.appendChild(coeur);
+          cardMediaPhoto.appendChild(cardBas);
+          mediaContainer.appendChild(cardMediaPhoto);
+        }
+      });
+    }
   }
 
   return { getUserCardDOM };
