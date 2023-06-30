@@ -6,6 +6,11 @@
     background-color: #FAFAFA;
     height: 300px;
     margin: 0 100px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 10px;
+    align-items: center;
+    justify-items: center;
 }
 
 .contact_button {
@@ -19,6 +24,8 @@
     background-color: #901C1C;
     border-radius: 5px;
     cursor: pointer;
+    grid-column: 2/3;
+    grid-row: 1;
 }
 
 .modal {
@@ -73,4 +80,139 @@ form input {
     height: 68px;
     border: none;
     border-radius: 5px;
+}
+
+.info {
+
+}
+
+.name {
+  color: #D3573C;
+  font-size: 36px;
+  margin: 25px 0px 0px 0px;
+}
+
+.menuTrier {
+  margin: 50px 100px ;
+}
+
+.Galleryh2 {
+  display: contents;
+  font-size: 18px;
+}
+
+.MenuGallery {
+  margin-left: 20px;
+  margin-bottom: 100px;
+  color: #FFFFFF;
+  background: #901C1C;
+  height: 69px;
+  width: 170px;
+  border-radius: 5px;
+  font-size: 18px;
+  text-align: center;
+  outline: 0;
+}
+
+.mediaContainer {
+  margin: 0 100px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 30px;
+}
+
+.media {
+  display: block;
+  height: 350px;
+  width: 100%;
+  border-radius: 5px;
+  object-fit: cover;
+}
+
+.coeur {
+  color: #901C1C;
+}
+
+.card-bas {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mediaTitle {
+  color: #901C1C;
+  font-size: 24px;
+  margin: 4px 0px;
+
+}
+
+.divCoeur{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: fixed;
+  background: #DB8876;
+  height: 60px;
+  width: 250px;
+  right: 50px;
+  bottom: 0px;
+  border-radius: 5px;
+  padding: 0px 15px;
+}
+
+.prix .compteurCoeur {
+font-size: 18px;
+}
+
+
+
+.menuTrier {
+  position: relative;
+}
+
+.divTrier {
+  cursor: pointer;
+  display: inline-block;
+}
+
+.menuDeroulant {
+  position: absolute;
+  top: 0;
+  left: 90px;
+  padding: 0;
+  margin: 0;
+  width: 140px;
+  list-style: none;
+  background-color: #901C1C;
+  color: #FFFFFF;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.menuDeroulant li {
+  padding: 8px 16px;
+  cursor: pointer;
+}
+
+.menuDeroulant li:hover {
+  background-color: #f6f6f6;
+}
+
+.menuDeroulant li:first-child {
+  border-bottom: 1px solid #ddd;
+  width: 90px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.li{
+  width: 90px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.menuDeroulant li:last-child {
+  border-top: 1px solid #ddd;
+  width: 90px;
+  margin-right: auto;
+  margin-left: auto;
 }
