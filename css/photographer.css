@@ -247,9 +247,10 @@ font-size: 18px;
   cursor: pointer;
 }
 
-#modal-image {
+#modal-image, #modal-video {
   width: 600px;
 }
+
 
 .close {
   color: #901C1C;

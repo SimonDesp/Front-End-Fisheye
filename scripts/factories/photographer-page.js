@@ -1,3 +1,5 @@
+let currentImageIndex = 0;
+
 function photographerPageFactory(photographer) {
   const { name, portrait, city, country, tagline, price } = photographer.information;
   const medias = photographer.medias;
@@ -5,6 +7,103 @@ function photographerPageFactory(photographer) {
   const picture = `assets/photographers/${portrait}`;
 
   function getUserCardDOM() {
+    function trierParNom() {
+      medias.sort((premier, second) => {
+        return premier.title.localeCompare(second.title);
+      });
+
+      mettreAJourAffichage();
+    }
+
+    function trierParPopularite() {
+      medias.sort((premier, second) => {
+        return second.likes - premier.likes;
+      });
+
+      mettreAJourAffichage();
+    }
+
+    function trierParDate() {
+      medias.sort((premier, second) => {
+        return new Date(premier.date) - new Date(second.date);
+      });
+
+      mettreAJourAffichage();
+    }
+
+    function mettreAJourAffichage() {
+      while (mediaContainer.firstChild) {
+        mediaContainer.firstChild.remove();
+      }
+      createMedias()
+    }
+
+    function afficherModal() {
+      const modalImage = modal.querySelector("#modal-image");
+      const modalVideo = modal.querySelector("#modal-video");
+      const selectedMedia = medias[currentImageIndex];
+
+      if (selectedMedia.image) {
+        modalImage.src = `assets/photographers/${name}/compresed/${selectedMedia.image}`;
+        modalImage.style.display = "block";
+        modalVideo.style.display = "none";
+      } else if (selectedMedia.video) {
+        modalImage.src = "";
+        modalImage.style.display = "none";
+        modalVideo.src = `assets/photographers/${name}/${selectedMedia.video}`;
+        modalVideo.style.display = "block";
+      }
+
+      modal.style.display = "block";
+
+      const modalflechegauche = document.querySelector(".modal-fleche-gauche");
+      const modalflechedroite = document.querySelector(".modal-fleche-droite");
+
+      modalflechegauche.addEventListener("click", montrerProchaineImage);
+      modalflechedroite.addEventListener("click", montrerprecedenteImage);
+    }
+
+    function montrerProchaineImage() {
+      if (currentImageIndex === 0) {
+        currentImageIndex = medias.length - 1;
+      } else {
+        currentImageIndex--;
+      }
+
+      updateModalImage();
+    }
+
+    function montrerprecedenteImage() {
+      if (currentImageIndex === medias.length - 1) {
+        currentImageIndex = 0;
+      } else {
+        currentImageIndex++;
+      }
+
+      updateModalImage();
+    }
+
+    function updateModalImage() {
+      const modalImage = modal.querySelector("#modal-image");
+      const modalVideo = modal.querySelector("#modal-video");
+      const selectedMedia = medias[currentImageIndex];
+
+      if (selectedMedia.image) {
+        modalImage.src = `assets/photographers/${name}/compresed/${selectedMedia.image}`;
+        modalImage.style.display = "block";
+        modalVideo.style.display = "none";
+      } else if (selectedMedia.video) {
+        modalImage.src = "";
+        modalImage.style.display = "none";
+        modalVideo.src = `assets/photographers/${name}/${selectedMedia.video}`;
+        modalVideo.style.display = "block";
+      }
+    }
+
+    function hideModal() {
+      modal.style.display = "none";
+    }
+
     const headerContainer = document.getElementsByClassName('photograph-header')[0];
 
     const div = document.createElement('div');
@@ -65,44 +164,55 @@ function photographerPageFactory(photographer) {
     const mediaContainer = document.createElement('div');
     mediaContainer.classList.add('mediaContainer');
 
-    medias.forEach((element) => {
-      const cardMediaPhoto = document.createElement('div');
-      cardMediaPhoto.classList.add('cardMediaPhoto');
+    function createMedias() {
 
-      const cardBas = document.createElement('div');
-      cardBas.classList.add('card-bas');
+      medias.forEach((element, index) => {
+        const cardMediaPhoto = document.createElement('div');
+        cardMediaPhoto.classList.add('cardMediaPhoto');
 
-      let media = null;
+        const cardBas = document.createElement('div');
+        cardBas.classList.add('card-bas');
 
-      if (element.image !== undefined) {
-        media = document.createElement('img');
-        media.setAttribute('src', `assets/photographers/${name}/compresed/${element.image}`);
-        media.classList.add('imageMedia');
-      } else if (element.video !== undefined) {
-        media = document.createElement('video');
-        media.setAttribute('src', `assets/photographers/${name}/${element.video}`);
-        media.setAttribute('controls', '');
-        media.classList.add('videoMedia');
-      }
+        let media = null;
 
-      if (media !== null) {
-        media.classList.add('media');
+        if (element.image !== undefined) {
+          media = document.createElement('img');
+          media.setAttribute('src', `assets/photographers/${name}/compresed/${element.image}`);
+          media.classList.add('imageMedia');
+        } else if (element.video !== undefined) {
+          media = document.createElement('video');
+          media.setAttribute('src', `assets/photographers/${name}/${element.video}`);
+          media.setAttribute('controls', '');
+          media.classList.add('videoMedia');
+        }
 
-        const mediaTitle = document.createElement('h2');
-        mediaTitle.textContent = element.title;
-        mediaTitle.classList.add('mediaTitle');
+        if (media !== null) {
+          media.classList.add('media');
 
-        const coeur = document.createElement('p');
-        coeur.innerHTML = `${element.likes} <i class="fa-solid fa-heart" style="color: #911c1c;"></i>`;
-        coeur.classList.add('coeur');
+          const mediaTitle = document.createElement('h2');
+          mediaTitle.textContent = element.title;
+          mediaTitle.classList.add('mediaTitle');
 
-        cardMediaPhoto.appendChild(media);
-        cardBas.appendChild(mediaTitle);
-        cardBas.appendChild(coeur);
-        cardMediaPhoto.appendChild(cardBas);
-        mediaContainer.appendChild(cardMediaPhoto);
-      }
-    });
+          const coeur = document.createElement('p');
+          coeur.innerHTML = `${element.likes} <i class="fa-solid fa-heart" style="color: #911c1c;"></i>`;
+          coeur.classList.add('coeur');
+
+          cardMediaPhoto.appendChild(media);
+          cardBas.appendChild(mediaTitle);
+          cardBas.appendChild(coeur);
+          cardMediaPhoto.appendChild(cardBas);
+          mediaContainer.appendChild(cardMediaPhoto);
+        }
+
+        cardMediaPhoto.addEventListener("click", function (event) {
+          currentImageIndex = index
+          selectedPhoto = event.currentTarget.querySelector("img");
+          afficherModal();
+        });
+      });
+    }
+
+    createMedias()
 
     // Compteur coeur et prix
     const divCoeur = document.createElement('div');
@@ -146,142 +256,15 @@ function photographerPageFactory(photographer) {
       }
     });
 
-    function trierParNom() {
-      const triemedia = medias.slice().sort((premier, second) => {
-        return premier.title.localeCompare(second.title);
-      });
-
-      mettreAJourAffichage(triemedia);
-    }
-
-    function trierParPopularite() {
-      const triemedia = medias.slice().sort((premier, second) => {
-        return second.likes - premier.likes;
-      });
-
-      mettreAJourAffichage(triemedia);
-    }
-
-    function trierParDate() {
-      const triemedia = medias.slice().sort((premier, second) => {
-        return new Date(premier.date) - new Date(second.date);
-      });
-
-      mettreAJourAffichage(triemedia);
-    }
-
-    function mettreAJourAffichage(triemedia) {
-      while (mediaContainer.firstChild) {
-        mediaContainer.firstChild.remove();
-      }
-
-      triemedia.forEach((element) => {
-        const cardMediaPhoto = document.createElement('div');
-        cardMediaPhoto.classList.add('cardMediaPhoto');
-
-        const cardBas = document.createElement('div');
-        cardBas.classList.add('card-bas');
-
-        let media = null;
-
-        if (element.image !== undefined) {
-          media = document.createElement('img');
-          media.setAttribute('src', `assets/photographers/${name}/${element.image}`);
-          media.classList.add('imageMedia');
-          media.loading = 'lazy';
-        } else if (element.video !== undefined) {
-          media = document.createElement('video');
-          media.setAttribute('src', `assets/photographers/${name}/${element.video}`);
-          media.classList.add('videoMedia');
-          media.loading = 'lazy';
-        }
-
-        if (media !== null) {
-          media.classList.add('media');
-
-          const mediaTitle = document.createElement('h2');
-          mediaTitle.textContent = element.title;
-          mediaTitle.classList.add('mediaTitle');
-
-          const coeur = document.createElement('p');
-          coeur.innerHTML = `${element.likes} <i class="fa-solid fa-heart" style="color: #911c1c;"></i>`;
-          coeur.classList.add('coeur');
-
-          cardMediaPhoto.appendChild(media);
-          cardBas.appendChild(mediaTitle);
-          cardBas.appendChild(coeur);
-          cardMediaPhoto.appendChild(cardBas);
-          mediaContainer.appendChild(cardMediaPhoto);
-        }
-      });
-    }
-
+    // modal
     var modal = document.getElementById("modal");
     var closeButton = document.getElementsByClassName("close")[0];
-
-    function afficherModal() {
-      const modalImage = modal.querySelector("#modal-image");
-      modalImage.src = selectedPhoto.src;
-      modal.style.display = "block";
-      const modalflechegauche = document.querySelector(".modal-fleche-gauche");
-      const modalflechedroite = document.querySelector(".modal-fleche-droite");
-
-      modalflechegauche.addEventListener("click", montrerProchaineImage);
-      modalflechedroite.addEventListener("click", montrerprecedenteImage);
-    }
-
-    let currentImageIndex = 0;
-
-    function montrerProchaineImage() {
-      if (currentImageIndex === 0) {
-        currentImageIndex = medias.length - 1;
-      } else {
-        currentImageIndex--;
-      }
-
-      updateModalImage();
-    }
-
-    function montrerprecedenteImage() {
-      if (currentImageIndex === medias.length - 1) {
-        currentImageIndex = 0;
-      } else {
-        currentImageIndex++;
-      }
-
-      updateModalImage();
-    }
-
-    function updateModalImage() {
-      const modalImage = modal.querySelector("#modal-image");
-      const selectedMedia = medias[currentImageIndex];
-
-      if (selectedMedia.image) {
-        modalImage.src = `assets/photographers/${name}/compresed/${selectedMedia.image}`;
-      } else if (selectedMedia.video) {
-        modalImage.src = `assets/photographers/${name}/${selectedMedia.video}`;
-      }
-    }
-
-
-    function hideModal() {
-      modal.style.display = "none";
-    }
 
     window.addEventListener("click", function (event) {
       if (event.target === modal) {
         hideModal();
       }
     });
-
-    var elements = document.getElementsByClassName("cardMediaPhoto");
-    let selectedPhoto = null;
-    for (var i = 0; i < elements.length; i++) {
-      elements[i].addEventListener("click", function (event) {
-        selectedPhoto = event.currentTarget.querySelector("img");
-        afficherModal();
-      });
-    }
 
     closeButton.addEventListener("click", hideModal);
 
