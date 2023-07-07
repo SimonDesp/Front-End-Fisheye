@@ -76,11 +76,12 @@ function photographerPageFactory(photographer) {
 
       if (element.image !== undefined) {
         media = document.createElement('img');
-        media.setAttribute('src', `assets/photographers/${name}/${element.image}`);
+        media.setAttribute('src', `assets/photographers/${name}/compresed/${element.image}`);
         media.classList.add('imageMedia');
       } else if (element.video !== undefined) {
         media = document.createElement('video');
         media.setAttribute('src', `assets/photographers/${name}/${element.video}`);
+        media.setAttribute('controls', '');
         media.classList.add('videoMedia');
       }
 
@@ -214,6 +215,76 @@ function photographerPageFactory(photographer) {
         }
       });
     }
+
+    var modal = document.getElementById("modal");
+    var closeButton = document.getElementsByClassName("close")[0];
+
+    function afficherModal() {
+      const modalImage = modal.querySelector("#modal-image");
+      modalImage.src = selectedPhoto.src;
+      modal.style.display = "block";
+      const modalflechegauche = document.querySelector(".modal-fleche-gauche");
+      const modalflechedroite = document.querySelector(".modal-fleche-droite");
+
+      modalflechegauche.addEventListener("click", montrerProchaineImage);
+      modalflechedroite.addEventListener("click", montrerprecedenteImage);
+    }
+
+    let currentImageIndex = 0;
+
+    function montrerProchaineImage() {
+      if (currentImageIndex === 0) {
+        currentImageIndex = medias.length - 1;
+      } else {
+        currentImageIndex--;
+      }
+
+      updateModalImage();
+    }
+
+    function montrerprecedenteImage() {
+      if (currentImageIndex === medias.length - 1) {
+        currentImageIndex = 0;
+      } else {
+        currentImageIndex++;
+      }
+
+      updateModalImage();
+    }
+
+    function updateModalImage() {
+      const modalImage = modal.querySelector("#modal-image");
+      const selectedMedia = medias[currentImageIndex];
+
+      if (selectedMedia.image) {
+        modalImage.src = `assets/photographers/${name}/compresed/${selectedMedia.image}`;
+      } else if (selectedMedia.video) {
+        modalImage.src = `assets/photographers/${name}/${selectedMedia.video}`;
+      }
+    }
+
+
+    function hideModal() {
+      modal.style.display = "none";
+    }
+
+    window.addEventListener("click", function (event) {
+      if (event.target === modal) {
+        hideModal();
+      }
+    });
+
+    var elements = document.getElementsByClassName("cardMediaPhoto");
+    let selectedPhoto = null;
+    for (var i = 0; i < elements.length; i++) {
+      elements[i].addEventListener("click", function (event) {
+        selectedPhoto = event.currentTarget.querySelector("img");
+        afficherModal();
+      });
+    }
+
+    closeButton.addEventListener("click", hideModal);
+
   }
 
   return { getUserCardDOM };
