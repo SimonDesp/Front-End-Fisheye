@@ -23,7 +23,7 @@
       <div class="modal-content">
         <img id="modal-image" src="" alt="Modal Image">
         <video id="modal-video" controls></video>
-        <span class="close">&times;</span>
+        <span class="closecard">&times;</span>
         <div class="modal-fleches">
           <span class="modal-fleche modal-fleche-gauche">&lt;</span>
           <span class="modal-fleche modal-fleche-droite">&gt;</span>
@@ -31,15 +31,21 @@
       </div>
     </div>
     <div id="contact_modal">
-			<div class="modal">
+			<div class="modal-contact">
 				<header>
           <h2>Contactez-moi</h2>
           <img src="assets/icons/close.svg" onclick="closeModal()" />
         </header>
 				<form>
 					<div>
-						<label>Prénom</label>
-						<input />
+            <label for="prenom">Prénom</label>
+            <input type="text" id="prenom" name="prenom">
+            <label for="nom">Nom</label>
+            <input type="text" id="nom" name="nom">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email">
+            <label for="message">Votre message</label>
+            <textarea id="message" name="message"></textarea>
 					</div>
           <button class="contact_button">Envoyer</button>
 				</form>

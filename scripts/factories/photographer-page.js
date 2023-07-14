@@ -63,6 +63,7 @@ function photographerPageFactory(photographer) {
       modalflechedroite.addEventListener("click", montrerprecedenteImage);
     }
 
+
     function montrerProchaineImage() {
       if (currentImageIndex === 0) {
         currentImageIndex = medias.length - 1;
@@ -102,6 +103,16 @@ function photographerPageFactory(photographer) {
 
     function hideModal() {
       modal.style.display = "none";
+    }
+
+    function updateTotalLikes() {
+      let totalLikes = 0;
+
+      medias.forEach((element) => {
+        totalLikes += element.likes;
+      });
+
+      compteurCoeur.innerHTML = `${totalLikes} <i class="fa-solid fa-heart"></i>`;
     }
 
     const headerContainer = document.getElementsByClassName('photograph-header')[0];
@@ -165,7 +176,6 @@ function photographerPageFactory(photographer) {
     mediaContainer.classList.add('mediaContainer');
 
     function createMedias() {
-
       medias.forEach((element, index) => {
         const cardMediaPhoto = document.createElement('div');
         cardMediaPhoto.classList.add('cardMediaPhoto');
@@ -194,8 +204,22 @@ function photographerPageFactory(photographer) {
           mediaTitle.classList.add('mediaTitle');
 
           const coeur = document.createElement('p');
-          coeur.innerHTML = `${element.likes} <i class="fa-solid fa-heart" style="color: #911c1c;"></i>`;
+          coeur.innerHTML = `${element.likes} <i class="fa-solid fa-heart like-heart" style="color: #911c1c;"></i>`;
           coeur.classList.add('coeur');
+
+          coeur.addEventListener('click', function (event) {
+            if (coeur.classList.contains('liked')) {
+              element.likes--;
+              coeur.classList.remove('liked');
+            } else {
+              element.likes++;
+              coeur.classList.add('liked');
+            }
+
+            coeur.innerHTML = `${element.likes} <i class="fa-solid fa-heart like-heart" style="color: #911c1c;"></i>`;
+
+            updateTotalLikes();
+          });
 
           cardMediaPhoto.appendChild(media);
           cardBas.appendChild(mediaTitle);
@@ -203,30 +227,23 @@ function photographerPageFactory(photographer) {
           cardMediaPhoto.appendChild(cardBas);
           mediaContainer.appendChild(cardMediaPhoto);
         }
-
-        cardMediaPhoto.addEventListener("click", function (event) {
-          currentImageIndex = index
-          selectedPhoto = event.currentTarget.querySelector("img");
+        // Ajouter un gestionnaire d'événements pour ouvrir la modale lors du clic sur l'image ou la vidéo
+        media.addEventListener('click', function (event) {
+          currentImageIndex = index;
           afficherModal();
         });
       });
     }
 
-    createMedias()
+    createMedias();
 
     // Compteur coeur et prix
     const divCoeur = document.createElement('div');
     divCoeur.classList.add('divCoeur');
 
-    let sommeLikes = 0;
-
-    medias.forEach((element) => {
-      sommeLikes += element.likes;
-    });
-
     const compteurCoeur = document.createElement('p');
-    compteurCoeur.innerHTML = `${sommeLikes} <i class="fa-solid fa-heart"></i>`;
     compteurCoeur.classList.add('compteurCoeur');
+    updateTotalLikes();
 
     const prix = document.createElement('p');
     prix.textContent = `${price}€ / jour`;
@@ -258,7 +275,7 @@ function photographerPageFactory(photographer) {
 
     // modal
     var modal = document.getElementById("modal");
-    var closeButton = document.getElementsByClassName("close")[0];
+    var closeButton = document.getElementsByClassName("closecard")[0];
 
     window.addEventListener("click", function (event) {
       if (event.target === modal) {
@@ -267,6 +284,25 @@ function photographerPageFactory(photographer) {
     });
 
     closeButton.addEventListener("click", hideModal);
+
+    const form = document.querySelector('form');
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+
+      // Récupérer les valeurs des champs
+      const prenom = document.getElementById('prenom').value;
+      const nom = document.getElementById('nom').value;
+      const email = document.getElementById('email').value;
+      const message = document.getElementById('message').value;
+
+      // Afficher les valeurs dans la console
+      console.log('Prénom :', prenom);
+      console.log('Nom :', nom);
+      console.log('Email :', email);
+      console.log('Message :', message);
+
+    });
 
   }
 
