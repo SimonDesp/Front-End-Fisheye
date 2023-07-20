@@ -50,7 +50,7 @@
 }
 
 .modal-contact header h2 {
-    font-size: 64px;
+    font-size: 50px;
     font-weight: normal;
     text-align: center;
 }
@@ -202,28 +202,17 @@ font-size: 18px;
   cursor: pointer;
 }
 
-.menuDeroulant li:hover {
-  background-color: #f6f6f6;
-}
-
-.menuDeroulant li:first-child {
+.menuDeroulant li {
   border-bottom: 1px solid #ddd;
   width: 90px;
   margin-right: auto;
   margin-left: auto;
 }
 
-.li{
-  width: 90px;
-  margin-right: auto;
-  margin-left: auto;
-}
+
 
 .menuDeroulant li:last-child {
-  border-top: 1px solid #ddd;
-  width: 90px;
-  margin-right: auto;
-  margin-left: auto;
+  border: none;
 }
 
 .modal {
@@ -234,7 +223,7 @@ font-size: 18px;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(255, 254, 254, 0.9);
 }
 
 /* .modal-content {
@@ -257,7 +246,8 @@ font-size: 18px;
 }
 
 #modal-image, #modal-video {
-  width: 600px;
+  max-width: 85%;
+  max-height: 100%;
 }
 
 
@@ -298,12 +288,6 @@ font-size: 18px;
 .modal-fleche-droite {
   margin-right: 20px;
   font-size: 72px;
-}
-
-.modal-content img,
-.modal-content video {
-  max-width: 100%;
-  max-height: 100%;
 }
 
 .modal-content {

@@ -10,9 +10,12 @@ function photographerFactory(data) {
     link.href = `photographer.html?id=${id}`;
     link.classList.add('hidden-link-decoration');
     link.style.textDecoration = 'none';
+    link.setAttribute('role', 'lien vers la page du photoghe');
+    link.setAttribute('aria-label', `${name}, ${city}, ${country}, photographer profile`);
 
     const img = document.createElement('img');
     img.setAttribute('src', picture);
+    img.setAttribute('alt', `${name}'s profile picture`);
     img.classList.add('profile-image');
 
     const h2 = document.createElement('h2');
@@ -34,7 +37,6 @@ function photographerFactory(data) {
     const idElement = document.createElement('p');
     idElement.textContent = `${id}`;
     idElement.classList.add('id-photographer');
-
 
     link.appendChild(article);
     article.appendChild(img);

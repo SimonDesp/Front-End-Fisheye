@@ -227,7 +227,7 @@ function photographerPageFactory(photographer) {
           cardMediaPhoto.appendChild(cardBas);
           mediaContainer.appendChild(cardMediaPhoto);
         }
-        // Ajouter un gestionnaire d'événements pour ouvrir la modale lors du clic sur l'image ou la vidéo
+
         media.addEventListener('click', function (event) {
           currentImageIndex = index;
           afficherModal();
@@ -284,24 +284,20 @@ function photographerPageFactory(photographer) {
     });
 
     closeButton.addEventListener("click", hideModal);
-
     const form = document.querySelector('form');
 
     form.addEventListener('submit', (event) => {
       event.preventDefault();
 
-      // Récupérer les valeurs des champs
       const prenom = document.getElementById('prenom').value;
       const nom = document.getElementById('nom').value;
       const email = document.getElementById('email').value;
       const message = document.getElementById('message').value;
 
-      // Afficher les valeurs dans la console
       console.log('Prénom :', prenom);
       console.log('Nom :', nom);
       console.log('Email :', email);
       console.log('Message :', message);
-
     });
 
   }
