@@ -10,7 +10,7 @@ function photographerFactory(data) {
     link.href = `photographer.html?id=${id}`;
     link.classList.add('hidden-link-decoration');
     link.style.textDecoration = 'none';
-    link.setAttribute('role', 'lien vers la page du photoghe');
+    link.setAttribute('role', 'lien vers la page du photographe');
     link.setAttribute('aria-label', `${name}, ${city}, ${country}, photographer profile`);
 
     const img = document.createElement('img');

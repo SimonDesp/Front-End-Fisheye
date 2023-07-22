@@ -7,6 +7,7 @@ function photographerPageFactory(photographer) {
   const picture = `assets/photographers/${portrait}`;
 
   function getUserCardDOM() {
+    
     function trierParNom() {
       medias.sort((premier, second) => {
         return premier.title.localeCompare(second.title);
@@ -35,7 +36,7 @@ function photographerPageFactory(photographer) {
       while (mediaContainer.firstChild) {
         mediaContainer.firstChild.remove();
       }
-      createMedias()
+      createMedias();
     }
 
     function afficherModal() {
@@ -62,7 +63,6 @@ function photographerPageFactory(photographer) {
       modalflechegauche.addEventListener("click", montrerProchaineImage);
       modalflechedroite.addEventListener("click", montrerprecedenteImage);
     }
-
 
     function montrerProchaineImage() {
       if (currentImageIndex === 0) {
@@ -135,6 +135,7 @@ function photographerPageFactory(photographer) {
     const img = document.createElement('img');
     img.setAttribute('src', picture);
     img.classList.add('profile-image');
+    img.setAttribute('aria-label', `image : ${name}`);
 
     div.appendChild(h2);
     div.appendChild(p2);
@@ -189,11 +190,13 @@ function photographerPageFactory(photographer) {
           media = document.createElement('img');
           media.setAttribute('src', `assets/photographers/${name}/compresed/${element.image}`);
           media.classList.add('imageMedia');
+          media.setAttribute('aria-label', `photo : ${element.title}`);
         } else if (element.video !== undefined) {
           media = document.createElement('video');
           media.setAttribute('src', `assets/photographers/${name}/${element.video}`);
           media.setAttribute('controls', '');
           media.classList.add('videoMedia');
+          media.setAttribute('aria-label', `photo : ${element.title}`);
         }
 
         if (media !== null) {
@@ -221,6 +224,26 @@ function photographerPageFactory(photographer) {
             updateTotalLikes();
           });
 
+          // Gérer le focus au clavier et ajouter des attributs ARIA pour les likes
+          coeur.addEventListener("keydown", (event) => {
+            if (event.key === "Enter" || event.key === " ") {
+              if (coeur.classList.contains('liked')) {
+                element.likes--;
+                coeur.classList.remove('liked');
+              } else {
+                element.likes++;
+                coeur.classList.add('liked');
+              }
+              coeur.innerHTML = `${element.likes} <i class="fa-solid fa-heart like-heart" style="color: #911c1c;"></i>`;
+              updateTotalLikes();
+            }
+          });
+
+          // Ajouter tabindex pour les éléments interactifs
+          media.setAttribute("tabindex", "0");
+          mediaTitle.setAttribute("tabindex", "0");
+          coeur.setAttribute("tabindex", "0");
+
           cardMediaPhoto.appendChild(media);
           cardBas.appendChild(mediaTitle);
           cardBas.appendChild(coeur);
@@ -228,9 +251,12 @@ function photographerPageFactory(photographer) {
           mediaContainer.appendChild(cardMediaPhoto);
         }
 
-        media.addEventListener('click', function (event) {
-          currentImageIndex = index;
-          afficherModal();
+        // Gérer le focus au clavier pour les médias
+        media.addEventListener("keydown", (event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            currentImageIndex = index;
+            afficherModal();
+          }
         });
       });
     }
@@ -273,9 +299,13 @@ function photographerPageFactory(photographer) {
       }
     });
 
-    // modal
+    // Modal
     var modal = document.getElementById("modal");
     var closeButton = document.getElementsByClassName("closecard")[0];
+
+    // Ajouter des attributs ARIA pour la boîte modale
+    modal.setAttribute("role", "dialog");
+    modal.setAttribute("aria-modal", "true");
 
     window.addEventListener("click", function (event) {
       if (event.target === modal) {
@@ -283,8 +313,29 @@ function photographerPageFactory(photographer) {
       }
     });
 
+    // Ajouter le focus au clavier et l'accessibilité pour le bouton de fermeture de la boîte modale
     closeButton.addEventListener("click", hideModal);
+    closeButton.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        hideModal();
+      }
+    });
+    closeButton.setAttribute("role", "button");
+    closeButton.setAttribute("tabindex", "0");
+    closeButton.setAttribute("aria-label", "Fermer la boîte modale");
+
     const form = document.querySelector('form');
+
+    // Ajouter des étiquettes et des associations de contrôles de formulaire
+    const prenomLabel = document.querySelector('label[for="prenom"]');
+    const nomLabel = document.querySelector('label[for="nom"]');
+    const emailLabel = document.querySelector('label[for="email"]');
+    const messageLabel = document.querySelector('label[for="message"]');
+
+    prenomLabel.textContent = "Prénom";
+    nomLabel.textContent = "Nom";
+    emailLabel.textContent = "Email";
+    messageLabel.textContent = "Message";
 
     form.addEventListener('submit', (event) => {
       event.preventDefault();
@@ -299,7 +350,6 @@ function photographerPageFactory(photographer) {
       console.log('Email :', email);
       console.log('Message :', message);
     });
-
   }
 
   return { getUserCardDOM };
