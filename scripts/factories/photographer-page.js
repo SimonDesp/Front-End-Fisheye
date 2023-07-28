@@ -7,7 +7,7 @@ function photographerPageFactory(photographer) {
   const picture = `assets/photographers/${portrait}`;
 
   function getUserCardDOM() {
-    
+
     function trierParNom() {
       medias.sort((premier, second) => {
         return premier.title.localeCompare(second.title);
@@ -33,9 +33,7 @@ function photographerPageFactory(photographer) {
     }
 
     function mettreAJourAffichage() {
-      while (mediaContainer.firstChild) {
-        mediaContainer.firstChild.remove();
-      }
+      mediaContainer.innerHTML='';
       createMedias();
     }
 
@@ -120,7 +118,7 @@ function photographerPageFactory(photographer) {
     const div = document.createElement('div');
     div.classList.add('info');
 
-    const h2 = document.createElement('h2');
+    const h2 = document.createElement('h1');
     h2.textContent = name;
     h2.classList.add('name');
 

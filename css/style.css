@@ -52,10 +52,6 @@ h1 {
   border-radius: 50%;
 } */
 
-.photographer-card {
-
-}
-
 .profile-image {
   object-fit: cover;
   height: 200px;
@@ -63,13 +59,10 @@ h1 {
   border-radius: 50%;
 }
 
-.name {
-
-}
 
 .location {
   font-size: 13px;
-  color: #D3573C;
+  color: #901C1C;
   margin: 0px;
 }
 
