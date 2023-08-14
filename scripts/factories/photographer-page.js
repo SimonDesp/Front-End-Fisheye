@@ -1,5 +1,7 @@
 let currentImageIndex = 0;
 
+
+
 function photographerPageFactory(photographer) {
   const { name, portrait, city, country, tagline, price } = photographer.information;
   const medias = photographer.medias;
@@ -33,7 +35,7 @@ function photographerPageFactory(photographer) {
     }
 
     function mettreAJourAffichage() {
-      mediaContainer.innerHTML='';
+      mediaContainer.innerHTML = '';
       createMedias();
     }
 
@@ -128,6 +130,7 @@ function photographerPageFactory(photographer) {
 
     const p4 = document.createElement('p');
     p4.textContent = `${tagline}`;
+    p4.classList.add('profil');
     p4.classList.add('tagline');
 
     const img = document.createElement('img');
@@ -154,16 +157,42 @@ function photographerPageFactory(photographer) {
 
     const options = ['Popularité', 'Date', 'Nom'];
 
-    const defaultOption = document.createElement('li');
-    defaultOption.textContent = options[0];
-    defaultOption.classList.add('active');
-    menuDeroulant.appendChild(defaultOption);
-
-    options.slice(1).forEach((option) => {
+    options.forEach((option, index) => {
       const li = document.createElement('li');
-      li.textContent = option;
+      const span = document.createElement('span');
+      span.textContent = option;
+      li.appendChild(span);
+
+      if (index === 0) {
+        li.classList.add('active');
+        const chevron = document.createElement('i');
+        chevron.classList.add('fa-solid', 'fa-chevron-up');
+        li.appendChild(chevron);
+
+        chevron.addEventListener('click', () => {
+          if (li.classList.contains('active')) {
+            li.classList.remove('active');
+            chevron.classList.remove('fa-chevron-down');
+            chevron.classList.add('fa-chevron-up');
+            options.slice(1).forEach((opt, optIndex) => {
+              menuDeroulant.children[optIndex + 1].style.display = 'none';
+            });
+          } else {
+            li.classList.add('active');
+            chevron.classList.remove('fa-chevron-up');
+            chevron.classList.add('fa-chevron-down');
+
+            options.slice(1).forEach((opt, optIndex) => {
+              menuDeroulant.children[optIndex + 1].style.display = 'list-item';
+            });
+          }
+        });
+      } else {
+        li.style.display = 'none';
+      }
       menuDeroulant.appendChild(li);
     });
+
 
     menuTrier.appendChild(divTrier);
     menuTrier.appendChild(menuDeroulant);
@@ -209,6 +238,17 @@ function photographerPageFactory(photographer) {
           coeur.classList.add('coeur');
 
           coeur.addEventListener('click', function (event) {
+            likemedia();
+          });
+
+          // Gérer le focus au clavier et ajouter des attributs ARIA pour les likes
+          coeur.addEventListener("keydown", (event) => {
+            if (event.key === "Enter" || event.key === " ") {
+             likemedia();
+            }
+          });
+
+          function likemedia() {
             if (coeur.classList.contains('liked')) {
               element.likes--;
               coeur.classList.remove('liked');
@@ -216,26 +256,9 @@ function photographerPageFactory(photographer) {
               element.likes++;
               coeur.classList.add('liked');
             }
-
             coeur.innerHTML = `${element.likes} <i class="fa-solid fa-heart like-heart" style="color: #911c1c;"></i>`;
-
             updateTotalLikes();
-          });
-
-          // Gérer le focus au clavier et ajouter des attributs ARIA pour les likes
-          coeur.addEventListener("keydown", (event) => {
-            if (event.key === "Enter" || event.key === " ") {
-              if (coeur.classList.contains('liked')) {
-                element.likes--;
-                coeur.classList.remove('liked');
-              } else {
-                element.likes++;
-                coeur.classList.add('liked');
-              }
-              coeur.innerHTML = `${element.likes} <i class="fa-solid fa-heart like-heart" style="color: #911c1c;"></i>`;
-              updateTotalLikes();
-            }
-          });
+          }
 
           // Ajouter tabindex pour les éléments interactifs
           media.setAttribute("tabindex", "0");
@@ -247,15 +270,22 @@ function photographerPageFactory(photographer) {
           cardBas.appendChild(coeur);
           cardMediaPhoto.appendChild(cardBas);
           mediaContainer.appendChild(cardMediaPhoto);
-        }
 
-        // Gérer le focus au clavier pour les médias
-        media.addEventListener("keydown", (event) => {
-          if (event.key === "Enter" || event.key === " ") {
-            currentImageIndex = index;
-            afficherModal();
-          }
-        });
+
+          media.addEventListener('click', function (event) {
+            if (event) {
+              currentImageIndex = index;
+              afficherModal();
+            }
+          });
+          // rajoute au clic de addeventlistener
+          media.addEventListener("keydown", (event) => {
+            if (event.key === "Enter" || event.key === " ") {
+              currentImageIndex = index;
+              afficherModal();
+            }
+          });
+        }
       });
     }
 
@@ -280,7 +310,6 @@ function photographerPageFactory(photographer) {
     document.body.appendChild(divCoeur);
 
     // Gestion du tri
-
     menuDeroulant.addEventListener('click', (event) => {
       const selectedOption = event.target.textContent;
 
@@ -318,6 +347,7 @@ function photographerPageFactory(photographer) {
         hideModal();
       }
     });
+    
     closeButton.setAttribute("role", "button");
     closeButton.setAttribute("tabindex", "0");
     closeButton.setAttribute("aria-label", "Fermer la boîte modale");

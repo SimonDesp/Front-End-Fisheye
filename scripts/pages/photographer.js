@@ -1,5 +1,5 @@
-async function getPhotographerbyId(id) {
-  return fetch('data/photographers.json')
+function getPhotographerbyId(id) {
+  fetch('data/photographers.json')
     .then(response => {
       if (response.ok) {
         return response.json();
@@ -22,8 +22,7 @@ async function getPhotographerbyId(id) {
           photographer.medias.push(info)
         }
       })
-
-      return photographer
+      displayData(photographer);
     })
     .catch(error => {
       console.error(error);
@@ -31,20 +30,16 @@ async function getPhotographerbyId(id) {
 }
 
 
-async function displayData(photographer) {
-  const photographerSection = document.querySelector(".photograph-header");
+function displayData(photographer) {
   const photographerFactory = photographerPageFactory(photographer);
   photographerFactory.getUserCardDOM();
-
 }
 
 function init() {
   let params = (new URL(document.location)).searchParams;
   let specificId = parseInt(params.get('id'));
 
-  getPhotographerbyId(specificId).then(photographer => {
-    displayData(photographer);
-  });
+  getPhotographerbyId(specificId)
 }
 
 init();
