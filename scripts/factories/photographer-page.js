@@ -1,150 +1,55 @@
-let currentImageIndex = 0;
+class PhotographerCardInformation {
+  constructor(photographerInformation) {
+    const { name, portrait, city, country, tagline, price } = photographerInformation;
+    this.name = name;
+    this.portrait = portrait;
+    this.city = city;
+    this.country = country;
+    this.tagline = tagline;
+    this.price = price;
+    this.assetMedia = `assets/photographers/`
+  }
 
-
-
-function photographerPageFactory(photographer) {
-  const { name, portrait, city, country, tagline, price } = photographer.information;
-  const medias = photographer.medias;
-
-  const picture = `assets/photographers/${portrait}`;
-
-  function getUserCardDOM() {
-
-    function trierParNom() {
-      medias.sort((premier, second) => {
-        return premier.title.localeCompare(second.title);
-      });
-
-      mettreAJourAffichage();
-    }
-
-    function trierParPopularite() {
-      medias.sort((premier, second) => {
-        return second.likes - premier.likes;
-      });
-
-      mettreAJourAffichage();
-    }
-
-    function trierParDate() {
-      medias.sort((premier, second) => {
-        return new Date(premier.date) - new Date(second.date);
-      });
-
-      mettreAJourAffichage();
-    }
-
-    function mettreAJourAffichage() {
-      mediaContainer.innerHTML = '';
-      createMedias();
-    }
-
-    function afficherModal() {
-      const modalImage = modal.querySelector("#modal-image");
-      const modalVideo = modal.querySelector("#modal-video");
-      const selectedMedia = medias[currentImageIndex];
-
-      if (selectedMedia.image) {
-        modalImage.src = `assets/photographers/${name}/compresed/${selectedMedia.image}`;
-        modalImage.style.display = "block";
-        modalVideo.style.display = "none";
-      } else if (selectedMedia.video) {
-        modalImage.src = "";
-        modalImage.style.display = "none";
-        modalVideo.src = `assets/photographers/${name}/${selectedMedia.video}`;
-        modalVideo.style.display = "block";
-      }
-
-      modal.style.display = "block";
-
-      const modalflechegauche = document.querySelector(".modal-fleche-gauche");
-      const modalflechedroite = document.querySelector(".modal-fleche-droite");
-
-      modalflechegauche.addEventListener("click", montrerProchaineImage);
-      modalflechedroite.addEventListener("click", montrerprecedenteImage);
-    }
-
-    function montrerProchaineImage() {
-      if (currentImageIndex === 0) {
-        currentImageIndex = medias.length - 1;
-      } else {
-        currentImageIndex--;
-      }
-
-      updateModalImage();
-    }
-
-    function montrerprecedenteImage() {
-      if (currentImageIndex === medias.length - 1) {
-        currentImageIndex = 0;
-      } else {
-        currentImageIndex++;
-      }
-
-      updateModalImage();
-    }
-
-    function updateModalImage() {
-      const modalImage = modal.querySelector("#modal-image");
-      const modalVideo = modal.querySelector("#modal-video");
-      const selectedMedia = medias[currentImageIndex];
-
-      if (selectedMedia.image) {
-        modalImage.src = `assets/photographers/${name}/compresed/${selectedMedia.image}`;
-        modalImage.style.display = "block";
-        modalVideo.style.display = "none";
-      } else if (selectedMedia.video) {
-        modalImage.src = "";
-        modalImage.style.display = "none";
-        modalVideo.src = `assets/photographers/${name}/${selectedMedia.video}`;
-        modalVideo.style.display = "block";
-      }
-    }
-
-    function hideModal() {
-      modal.style.display = "none";
-    }
-
-    function updateTotalLikes() {
-      let totalLikes = 0;
-
-      medias.forEach((element) => {
-        totalLikes += element.likes;
-      });
-
-      compteurCoeur.innerHTML = `${totalLikes} <i class="fa-solid fa-heart"></i>`;
-    }
-
-    const headerContainer = document.getElementsByClassName('photograph-header')[0];
+  display() {
+    const picture = this.assetMedia + this.portrait
+    const headerContainer = document.getElementById('photograph-header');
 
     const div = document.createElement('div');
     div.classList.add('info');
 
     const h2 = document.createElement('h1');
-    h2.textContent = name;
+    h2.textContent = this.name;
     h2.classList.add('name');
 
     const p2 = document.createElement('p');
-    p2.textContent = `${city}, ${country}`;
+    p2.textContent = `${this.city}, ${this.country}`;
     p2.classList.add('location');
 
     const p4 = document.createElement('p');
-    p4.textContent = `${tagline}`;
+    p4.textContent = `${this.tagline}`;
     p4.classList.add('profil');
     p4.classList.add('tagline');
 
     const img = document.createElement('img');
     img.setAttribute('src', picture);
     img.classList.add('profile-image');
-    img.setAttribute('aria-label', `image : ${name}`);
+    img.setAttribute('aria-label', `image : ${this.name}`);
 
     div.appendChild(h2);
     div.appendChild(p2);
     div.appendChild(p4);
     headerContainer.appendChild(div);
     headerContainer.appendChild(img);
+  }
+}
 
-    // menu trier//
+class DisplayMenuTrier {
+  constructor(medias, instanceDisplayMedias) {
+    this.medias = medias;
+    this.instanceDisplayMedias = instanceDisplayMedias;
+  }
+
+  displayMenuTrier() {
     const menuTrier = document.createElement('div');
     menuTrier.classList.add('menuTrier');
 
@@ -155,7 +60,7 @@ function photographerPageFactory(photographer) {
     const menuDeroulant = document.createElement('ul');
     menuDeroulant.classList.add('menuDeroulant');
 
-    const options = ['Popularité', 'Date', 'Nom'];
+    const options = ['Popularité','Popularité', 'Date', 'Nom'];
 
     options.forEach((option, index) => {
       const li = document.createElement('li');
@@ -199,173 +104,93 @@ function photographerPageFactory(photographer) {
 
     document.body.appendChild(menuTrier);
 
-    // Container media //
-    const mediaContainer = document.createElement('div');
-    mediaContainer.classList.add('mediaContainer');
-
-    function createMedias() {
-      medias.forEach((element, index) => {
-        const cardMediaPhoto = document.createElement('div');
-        cardMediaPhoto.classList.add('cardMediaPhoto');
-
-        const cardBas = document.createElement('div');
-        cardBas.classList.add('card-bas');
-
-        let media = null;
-
-        if (element.image !== undefined) {
-          media = document.createElement('img');
-          media.setAttribute('src', `assets/photographers/${name}/compresed/${element.image}`);
-          media.classList.add('imageMedia');
-          media.setAttribute('aria-label', `photo : ${element.title}`);
-        } else if (element.video !== undefined) {
-          media = document.createElement('video');
-          media.setAttribute('src', `assets/photographers/${name}/${element.video}`);
-          media.setAttribute('controls', '');
-          media.classList.add('videoMedia');
-          media.setAttribute('aria-label', `photo : ${element.title}`);
-        }
-
-        if (media !== null) {
-          media.classList.add('media');
-
-          const mediaTitle = document.createElement('h2');
-          mediaTitle.textContent = element.title;
-          mediaTitle.classList.add('mediaTitle');
-
-          const coeur = document.createElement('p');
-          coeur.innerHTML = `${element.likes} <i class="fa-solid fa-heart like-heart" style="color: #911c1c;"></i>`;
-          coeur.classList.add('coeur');
-
-          coeur.addEventListener('click', function (event) {
-            likemedia();
-          });
-
-          // Gérer le focus au clavier et ajouter des attributs ARIA pour les likes
-          coeur.addEventListener("keydown", (event) => {
-            if (event.key === "Enter" || event.key === " ") {
-             likemedia();
-            }
-          });
-
-          function likemedia() {
-            if (coeur.classList.contains('liked')) {
-              element.likes--;
-              coeur.classList.remove('liked');
-            } else {
-              element.likes++;
-              coeur.classList.add('liked');
-            }
-            coeur.innerHTML = `${element.likes} <i class="fa-solid fa-heart like-heart" style="color: #911c1c;"></i>`;
-            updateTotalLikes();
-          }
-
-          // Ajouter tabindex pour les éléments interactifs
-          media.setAttribute("tabindex", "0");
-          mediaTitle.setAttribute("tabindex", "0");
-          coeur.setAttribute("tabindex", "0");
-
-          cardMediaPhoto.appendChild(media);
-          cardBas.appendChild(mediaTitle);
-          cardBas.appendChild(coeur);
-          cardMediaPhoto.appendChild(cardBas);
-          mediaContainer.appendChild(cardMediaPhoto);
-
-
-          media.addEventListener('click', function (event) {
-            if (event) {
-              currentImageIndex = index;
-              afficherModal();
-            }
-          });
-          // rajoute au clic de addeventlistener
-          media.addEventListener("keydown", (event) => {
-            if (event.key === "Enter" || event.key === " ") {
-              currentImageIndex = index;
-              afficherModal();
-            }
-          });
-        }
-      });
-    }
-
-    createMedias();
-
-    // Compteur coeur et prix
-    const divCoeur = document.createElement('div');
-    divCoeur.classList.add('divCoeur');
-
-    const compteurCoeur = document.createElement('p');
-    compteurCoeur.classList.add('compteurCoeur');
-    updateTotalLikes();
-
-    const prix = document.createElement('p');
-    prix.textContent = `${price}€ / jour`;
-    prix.classList.add('prix');
-
-    divCoeur.appendChild(compteurCoeur);
-    divCoeur.appendChild(prix);
-
-    document.body.appendChild(mediaContainer);
-    document.body.appendChild(divCoeur);
-
     // Gestion du tri
     menuDeroulant.addEventListener('click', (event) => {
       const selectedOption = event.target.textContent;
 
       switch (selectedOption) {
+        case 'test':
+          break;
         case 'Nom':
-          trierParNom();
+          this.trierParNom();
           break;
         case 'Popularité':
-          trierParPopularite();
+          this.trierParPopularite();
           break;
         case 'Date':
-          trierParDate();
+          this.trierParDate();
           break;
       }
     });
+  }
 
-    // Modal
-    var modal = document.getElementById("modal");
-    var closeButton = document.getElementsByClassName("closecard")[0];
+  trierParNom() {
+    const testOption = document.querySelector('.menuDeroulant li:first-child');
+    testOption.querySelector('span').textContent = 'Nom';
 
-    // Ajouter des attributs ARIA pour la boîte modale
-    modal.setAttribute("role", "dialog");
-    modal.setAttribute("aria-modal", "true");
+    this.medias.sort((premier, second) => {
+      return premier.title.localeCompare(second.title);
+    });
 
-    window.addEventListener("click", function (event) {
-      if (event.target === modal) {
-        hideModal();
+    this.mettreAJourAffichage();
+  }
+
+  trierParPopularite() {
+    const testOption = document.querySelector('.menuDeroulant li:first-child');
+    testOption.querySelector('span').textContent = 'Popularité';
+
+    this.medias.sort((premier, second) => {
+      return second.likes - premier.likes;
+    });
+
+    this.mettreAJourAffichage();
+  }
+
+  trierParDate() {
+    const testOption = document.querySelector('.menuDeroulant li:first-child');
+    testOption.querySelector('span').textContent = 'Date';
+
+    this.medias.sort((premier, second) => {
+      return new Date(premier.date) - new Date(second.date);
+    });
+
+    this.mettreAJourAffichage();
+  }
+
+  mettreAJourAffichage() {
+    this.instanceDisplayMedias.containerMedia.innerHTML = '';
+    this.instanceDisplayMedias.createMedias();
+  }
+}
+
+class FormContact {
+  constructor() {
+    this.form = document.querySelector('form');
+    this.prenomLabel = document.querySelector('label[for="prenom"]');
+    this.nomLabel = document.querySelector('label[for="nom"]');
+    this.emailLabel = document.querySelector('label[for="email"]');
+    this.messageLabel = document.querySelector('label[for="message"]');
+
+    this.modalContactElement = document.getElementById("contact_modal");
+    this.closeContact = this.modalContactElement.querySelector(".close-contact");
+    this.closeContact.setAttribute("tabindex", "0");
+    this.closeContact.addEventListener("click", () => this.hideContactModal());
+    this.closeContact.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        this.hideContactModal();
       }
     });
 
-    // Ajouter le focus au clavier et l'accessibilité pour le bouton de fermeture de la boîte modale
-    closeButton.addEventListener("click", hideModal);
-    closeButton.addEventListener("keydown", (event) => {
-      if (event.key === "Enter" || event.key === " ") {
-        hideModal();
-      }
-    });
-    
-    closeButton.setAttribute("role", "button");
-    closeButton.setAttribute("tabindex", "0");
-    closeButton.setAttribute("aria-label", "Fermer la boîte modale");
+    this.setupForm();
+  }
 
-    const form = document.querySelector('form');
+  setupForm() {
+    this.prenomLabel.textContent = "Prénom";
+    this.nomLabel.textContent = "Nom";
+    this.emailLabel.textContent = "Email";
+    this.messageLabel.textContent = "Message";
 
-    // Ajouter des étiquettes et des associations de contrôles de formulaire
-    const prenomLabel = document.querySelector('label[for="prenom"]');
-    const nomLabel = document.querySelector('label[for="nom"]');
-    const emailLabel = document.querySelector('label[for="email"]');
-    const messageLabel = document.querySelector('label[for="message"]');
-
-    prenomLabel.textContent = "Prénom";
-    nomLabel.textContent = "Nom";
-    emailLabel.textContent = "Email";
-    messageLabel.textContent = "Message";
-
-    form.addEventListener('submit', (event) => {
+    this.form.addEventListener('submit', (event) => {
       event.preventDefault();
 
       const prenom = document.getElementById('prenom').value;
@@ -373,12 +198,275 @@ function photographerPageFactory(photographer) {
       const email = document.getElementById('email').value;
       const message = document.getElementById('message').value;
 
+      const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+
+      if (prenom.length < 2) {
+        alert("Le champ Prénom doit comporter au moins 2 caractères.");
+        return;
+      }
+
+      if (nom.length < 2) {
+        alert("Le champ Nom doit comporter au moins 2 caractères.");
+        return;
+      }
+
+      if (!email.match(emailRegex)) {
+        alert("Veuillez entrer une adresse e-mail valide.");
+        return;
+      }
+
+      if (message.length < 10) {
+        alert("Le champ Message doit comporter au moins 10 caractères.");
+        return;
+      }
+
       console.log('Prénom :', prenom);
       console.log('Nom :', nom);
       console.log('Email :', email);
       console.log('Message :', message);
     });
+
   }
 
-  return { getUserCardDOM };
+
+
+  hideContactModal() {
+    this.modalContactElement.style.display = "none";
+  }
+}
+
+class ModalImageVideo {
+  constructor(name, medias) {
+    this.name = name;
+    this.medias = medias;
+    this.currentImageIndex = 0;
+    this.modalElement = document.getElementById("modal");
+    this.modalImage = this.modalElement.querySelector("#modal-image");
+    this.modalVideo = this.modalElement.querySelector("#modal-video");
+    this.modalFlecheGauche = this.modalElement.querySelector(".modal-fleche-gauche");
+    this.modalFlecheDroite = this.modalElement.querySelector(".modal-fleche-droite");
+    this.modalFlecheGauche.setAttribute("tabindex", "0");
+    this.modalFlecheDroite.setAttribute("tabindex", "0");
+    this.closecardButton = this.modalElement.querySelector(".closecard");
+    this.closecardButton.setAttribute("tabindex", "0");
+
+    const closecard = this.modalElement.querySelector(".closecard");
+    closecard.addEventListener("click", () => this.hideModal());
+    this.modalFlecheGauche.addEventListener("click", () => this.montrerProchaineImage());
+    this.modalFlecheDroite.addEventListener("click", () => this.montrerPrecedenteImage());
+
+     this.modalFlecheGauche.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        this.montrerProchaineImage();
+      }
+    });
+
+    this.modalFlecheDroite.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        this.montrerPrecedenteImage();
+      }
+    });
+
+    this.closecardButton.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        this.hideModal();
+      }
+    });
+
+  }
+
+  afficherModal(index) {
+    this.currentImageIndex = index;
+    const selectedMedia = this.medias[this.currentImageIndex];
+
+    if (selectedMedia.image) {
+      this.modalImage.src = `assets/photographers/${this.name}/compresed/${selectedMedia.image}`;
+      this.modalImage.style.display = "block";
+      this.modalVideo.style.display = "none";
+    } else if (selectedMedia.video) {
+      this.modalImage.style.display = "none";
+      this.modalVideo.src = `assets/photographers/${this.name}/${selectedMedia.video}`;
+      this.modalVideo.style.display = "block";
+    }
+
+    this.modalElement.style.display = "block";
+    this.closecardButton.focus();
+
+  }
+
+  montrerProchaineImage() {
+    if (this.currentImageIndex === 0) {
+      this.currentImageIndex = this.medias.length - 1;
+    } else {
+      this.currentImageIndex--;
+    }
+
+    this.updateModalImage();
+  }
+
+  montrerPrecedenteImage() {
+    if (this.currentImageIndex === this.medias.length - 1) {
+      this.currentImageIndex = 0;
+    } else {
+      this.currentImageIndex++;
+    }
+
+    this.updateModalImage();
+  }
+
+  updateModalImage() {
+    const selectedMedia = this.medias[this.currentImageIndex];
+    if (selectedMedia.image) {
+      this.modalImage.src = `assets/photographers/${this.name}/compresed/${selectedMedia.image}`;
+      this.modalImage.style.display = "block";
+      this.modalVideo.style.display = "none";
+    } else if (selectedMedia.video) {
+      this.modalImage.src = "";
+      this.modalImage.style.display = "none";
+      this.modalVideo.src = `assets/photographers/${this.name}/${selectedMedia.video}`;
+      this.modalVideo.style.display = "block";
+    }
+  }
+
+  hideModal() {
+    this.modalElement.style.display = "none";
+  }
+}
+
+class DisplayMedias {
+  constructor(name, medias, price) {
+    this.name = name;
+    this.medias = medias;
+    this.price = price;
+    this.containerMedia = document.createElement('div');
+    this.containerMedia.classList.add('mediaContainer');
+    this.modalInstance = new ModalImageVideo(name, medias);
+  }
+
+  updateTotalLikes() {
+    let totalLikes = 0;
+    this.medias.forEach((element) => {
+      totalLikes += element.likes;
+    });
+    this.compteurCoeur.innerHTML = `${totalLikes} <i class="fa-solid fa-heart"></i>`;
+  }
+
+  createMedias() {
+    this.medias.forEach((element, index) => {
+      const cardMediaPhoto = document.createElement('div');
+      cardMediaPhoto.classList.add('cardMediaPhoto');
+
+      const cardBas = document.createElement('div');
+      cardBas.classList.add('card-bas');
+
+      let media = null;
+
+      if (element.image !== undefined) {
+        media = document.createElement('img');
+        media.setAttribute('src', `assets/photographers/${this.name}/compresed/${element.image}`);
+        media.classList.add('imageMedia');
+        media.setAttribute('aria-label', `photo : ${element.title}`);
+      } else if (element.video !== undefined) {
+        media = document.createElement('video');
+        media.setAttribute('src', `assets/photographers/${this.name}/${element.video}`);
+        media.setAttribute('controls', '');
+        media.classList.add('videoMedia');
+        media.setAttribute('aria-label', `video : ${element.title}`);
+      }
+
+      if (media !== null) {
+        media.classList.add('media');
+
+        const mediaTitle = document.createElement('h2');
+        mediaTitle.textContent = element.title;
+        mediaTitle.classList.add('mediaTitle');
+
+        const coeur = document.createElement('p');
+        coeur.innerHTML = `${element.likes} <i class="fa-solid fa-heart like-heart" style="color: #911c1c;"></i>`;
+        coeur.classList.add('coeur');
+
+        coeur.addEventListener('click', () => {
+          this.likeMedia(element, coeur);
+        });
+
+        coeur.addEventListener("keydown", (event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            this.likeMedia(element, coeur);
+          }
+        });
+
+        media.setAttribute("tabindex", "0");
+        mediaTitle.setAttribute("tabindex", "0");
+        coeur.setAttribute("tabindex", "0");
+
+        cardMediaPhoto.appendChild(media);
+        cardBas.appendChild(mediaTitle);
+        cardBas.appendChild(coeur);
+        cardMediaPhoto.appendChild(cardBas);
+        this.containerMedia.appendChild(cardMediaPhoto);
+
+        media.addEventListener('click', () => {
+          this.modalInstance.afficherModal(index);
+        });
+
+        media.addEventListener("keydown", (event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            this.modalInstance.afficherModal(index);
+          }
+        });
+      }
+    });
+  }
+
+
+  likeMedia(element, coeur) {
+    if (coeur.classList.contains('liked')) {
+      element.likes--;
+      coeur.classList.remove('liked');
+    } else {
+      element.likes++;
+      coeur.classList.add('liked');
+    }
+    coeur.innerHTML = `${element.likes} <i class="fa-solid fa-heart like-heart" style="color: #911c1c;"></i>`;
+    this.updateTotalLikes();
+  }
+
+  displayLikesAndPrice() {
+    this.createMedias()
+    const divCoeur = document.createElement('div');
+    divCoeur.classList.add('divCoeur');
+
+    this.compteurCoeur = document.createElement('p');
+    this.compteurCoeur.classList.add('compteurCoeur');
+    this.updateTotalLikes();
+
+    const prix = document.createElement('p');
+    prix.textContent = `${this.price}€ / jour`;
+    prix.classList.add('prix');
+
+    divCoeur.appendChild(this.compteurCoeur);
+    divCoeur.appendChild(prix);
+
+    const body = document.querySelector('body');
+    body.appendChild(divCoeur);
+    body.appendChild(this.containerMedia);
+  }
+}
+
+class PhotographerUIFactory {
+  constructor(photographer) {
+    this.medias = photographer.medias;
+    this.assetMedia = `assets/photographers/`;
+    this.displayMedias = new DisplayMedias(photographer.information.name, photographer.medias, photographer.information.price);
+    this.PhotographerCardInformation = new PhotographerCardInformation(photographer.information);
+    this.MenuTrier = new DisplayMenuTrier(this.medias, this.displayMedias);
+    this.formContact = new FormContact();
+  }
+
+  displayPage() {
+    this.PhotographerCardInformation.display();
+    this.MenuTrier.displayMenuTrier();
+    this.displayMedias.displayLikesAndPrice();
+
+  }
 }

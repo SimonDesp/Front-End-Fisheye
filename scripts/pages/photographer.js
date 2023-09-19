@@ -22,7 +22,7 @@ function getPhotographerbyId(id) {
           photographer.medias.push(info)
         }
       })
-      displayData(photographer);
+      displayPhotographerPage(photographer);
     })
     .catch(error => {
       console.error(error);
@@ -30,9 +30,10 @@ function getPhotographerbyId(id) {
 }
 
 
-function displayData(photographer) {
-  const photographerFactory = photographerPageFactory(photographer);
-  photographerFactory.getUserCardDOM();
+function displayPhotographerPage(photographer) {
+
+  const photographerUIFactory = new PhotographerUIFactory(photographer);
+  photographerUIFactory.displayPage();
 }
 
 function init() {
