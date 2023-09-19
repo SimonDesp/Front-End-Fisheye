@@ -198,28 +198,6 @@ class FormContact {
       const email = document.getElementById('email').value;
       const message = document.getElementById('message').value;
 
-      const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-
-      if (prenom.length < 2) {
-        alert("Le champ Prénom doit comporter au moins 2 caractères.");
-        return;
-      }
-
-      if (nom.length < 2) {
-        alert("Le champ Nom doit comporter au moins 2 caractères.");
-        return;
-      }
-
-      if (!email.match(emailRegex)) {
-        alert("Veuillez entrer une adresse e-mail valide.");
-        return;
-      }
-
-      if (message.length < 10) {
-        alert("Le champ Message doit comporter au moins 10 caractères.");
-        return;
-      }
-
       console.log('Prénom :', prenom);
       console.log('Nom :', nom);
       console.log('Email :', email);
